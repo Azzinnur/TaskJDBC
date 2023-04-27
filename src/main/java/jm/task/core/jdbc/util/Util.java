@@ -2,6 +2,7 @@ package jm.task.core.jdbc.util;
 
 import jm.task.core.jdbc.model.User;
 import org.hibernate.HibernateException;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
@@ -19,6 +20,7 @@ public class Util {
     private static final String PASSWORD = "Root1234";
     private static SessionFactory sessionFactory;
     private static Connection connection;
+
 
     public static Connection getConnection() {
 
@@ -66,6 +68,13 @@ public class Util {
             if (!connection.isClosed()) {connection.close();}
         } catch(SQLException e) {
             System.out.println("Cannot close connection");
+        }
+    }
+    public static void closeSessionFactory() {
+        try{
+            if (sessionFactory.isOpen()) {sessionFactory.close();}
+        } catch(HibernateException e) {
+            System.out.println("Cannot close session");
         }
     }
 }
