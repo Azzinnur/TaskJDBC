@@ -4,20 +4,22 @@ import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
 
 import java.util.List;
 
 public class UserDaoHibernateImpl implements UserDao {
-    private Session session = Util.getSessionFactory().openSession();
+    private SessionFactory sessionFactory = Util.getSessionFactory();
+
     public UserDaoHibernateImpl() {
     }
 
     @Override
     public void createUsersTable() {
 
-        try {
+        try (Session session = sessionFactory.openSession()) {
             Transaction transaction = session.beginTransaction();
             session.createSQLQuery("CREATE TABLE IF NOT EXISTS `Users` ("
                     + "  `ID` int NOT NULL AUTO_INCREMENT,\n"
@@ -35,7 +37,7 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void dropUsersTable() {
-        try {
+        try (Session session = sessionFactory.openSession()) {
             Transaction transaction = session.beginTransaction();
             session.createSQLQuery("DROP TABLE IF EXISTS mydbtest.users;").executeUpdate();
             transaction.commit();
@@ -47,14 +49,14 @@ public class UserDaoHibernateImpl implements UserDao {
     @Override
     public void saveUser(String name, String lastName, byte age) {
         Transaction transaction = null;
-        try {
+        try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
             User user = new User(name, lastName, age);
             session.save(user);
             transaction.commit();
             System.out.printf("User с именем %s добавлен в базу данных.\n", name);
         } catch (HibernateException e) {
-            if(transaction != null) {
+            if (transaction != null) {
                 transaction.rollback();
             }
             System.out.printf("Oшибка при добавлении User %s в базу данных!\n", name);
@@ -64,13 +66,13 @@ public class UserDaoHibernateImpl implements UserDao {
     @Override
     public void removeUserById(long id) {
         Transaction transaction = null;
-        try {
+        try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
             User user = session.get(User.class, id);
             session.delete(user);
             transaction.commit();
         } catch (HibernateException e) {
-            if(transaction != null) {
+            if (transaction != null) {
                 transaction.rollback();
             }
             System.out.println("Ошибка при удалении данных!");
@@ -82,12 +84,12 @@ public class UserDaoHibernateImpl implements UserDao {
     public List<User> getAllUsers() {
         Transaction transaction = null;
         List<User> list = null;
-        try {
+        try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
             list = session.createQuery("from User").list();
             transaction.commit();
         } catch (HibernateException e) {
-            if(transaction != null) {
+            if (transaction != null) {
                 transaction.rollback();
             }
             System.out.println("Ошибка при создании списка Юзеров из базы данных!");
@@ -97,7 +99,7 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void cleanUsersTable() {
-        try {
+        try (Session session = sessionFactory.openSession()) {
             Transaction transaction = session.beginTransaction();
             session.createSQLQuery("DELETE FROM mydbtest.users;").executeUpdate();
             transaction.commit();
