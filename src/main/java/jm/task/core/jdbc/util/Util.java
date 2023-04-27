@@ -74,7 +74,7 @@ public class Util {
         try{
             if (sessionFactory.isOpen()) {sessionFactory.close();}
         } catch(HibernateException e) {
-            System.out.println("Cannot close session");
+            System.out.println("Cannot close SessionFactory");
         }
     }
 }
