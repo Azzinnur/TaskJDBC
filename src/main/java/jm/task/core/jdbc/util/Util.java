@@ -10,12 +10,13 @@ import org.hibernate.cfg.Environment;
 import org.hibernate.service.ServiceRegistry;
 
 
+import javax.transaction.Transaction;
 import java.sql.*;
 import java.util.Properties;
 
 public class Util {
 
-    private static final String URL = "jdbc:mysql://localhost:3306/mydbtest?useSSL=false";
+    private static final String URL = "jdbc:mysql://localhost:3306/hiber_test";
     private static final String USERNAME = "root";
     private static final String PASSWORD = "Root1234";
     private static SessionFactory sessionFactory;
@@ -46,8 +47,9 @@ public class Util {
                 settings.put(Environment.URL, URL);
                 settings.put(Environment.USER, USERNAME);
                 settings.put(Environment.PASS, PASSWORD);
-                settings.put(Environment.DIALECT, "org.hibernate.dialect.MySQLDialect");
+                settings.put(Environment.DIALECT, "org.hibernate.dialect.MySQL8Dialect");
                 settings.put(Environment.SHOW_SQL, "true");
+                settings.put(Environment.FORMAT_SQL, "true");
                 settings.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, "thread");
                 settings.put(Environment.HBM2DDL_AUTO, "");
                 configuration.setProperties(settings);
