@@ -39,7 +39,7 @@ public class UserDaoHibernateImpl implements UserDao {
     public void dropUsersTable() {
         try (Session session = sessionFactory.openSession()) {
             Transaction transaction = session.beginTransaction();
-            session.createSQLQuery("DROP TABLE IF EXISTS mydbtest.users;").executeUpdate();
+            session.createSQLQuery("DROP TABLE IF EXISTS hiber_test.users;").executeUpdate();
             transaction.commit();
         } catch (HibernateException e) {
             System.out.println("Ошибка при удалении таблицы!");
@@ -86,7 +86,7 @@ public class UserDaoHibernateImpl implements UserDao {
         List<User> list = null;
         try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
-            list = session.createQuery("from User").list();
+            list = session.createQuery("from User", User.class).list();
             transaction.commit();
         } catch (HibernateException e) {
             if (transaction != null) {
@@ -101,7 +101,7 @@ public class UserDaoHibernateImpl implements UserDao {
     public void cleanUsersTable() {
         try (Session session = sessionFactory.openSession()) {
             Transaction transaction = session.beginTransaction();
-            session.createSQLQuery("DELETE FROM mydbtest.users;").executeUpdate();
+            session.createSQLQuery("DELETE FROM hiber_test.users;").executeUpdate();
             transaction.commit();
         } catch (HibernateException e) {
             System.out.println("Ошибка при удалении данных из таблицы!");
